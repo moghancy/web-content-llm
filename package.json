@@ -1,0 +1,35 @@
+{
+  "name": "web-to-pdf",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Web scraping tool that extracts content from websites and generates clean, well-formatted PDF documents",
+  "main": "contentPdfCreator.js",
+  "scripts": {
+    "start": "node contentPdfCreator.js"
+  },
+  "keywords": [
+    "web-scraping",
+    "pdf-generator",
+    "content-extraction",
+    "cheerio",
+    "puppeteer",
+    "html-to-pdf",
+    "scraper",
+    "web-to-pdf"
+  ],
+  "author": "MOGHANCY",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MOGHANCY/web-to-pdf.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MOGHANCY/web-to-pdf/issues"
+  },
+  "homepage": "https://github.com/MOGHANCY/web-to-pdf#readme",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "cheerio": "^1.1.2",
+    "puppeteer": "^24.23.0"
+  }
+}
