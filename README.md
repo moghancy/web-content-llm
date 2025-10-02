@@ -3,7 +3,7 @@
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
-A Node.js tool that scrapes website content and generates clean, well-formatted PDF documents. Built with Playwright for JavaScript rendering and Cheerio for HTML parsing.
+A Node.js tool that scrapes website content and generates clean, well-formatted PDF documents. Built with Cheerio for HTML parsing and Puppeteer for PDF generation.
 
 ## Features
 
@@ -26,7 +26,6 @@ npm install
 
 ## Dependencies
 
-- **playwright** - Browser automation for JavaScript-rendered pages
 - **axios** - HTTP client for fetching HTML
 - **cheerio** - HTML parsing and manipulation
 - **puppeteer** - PDF generation
@@ -265,7 +264,6 @@ This project uses third-party libraries that are licensed under their own terms:
 - axios (MIT)
 - cheerio (MIT)
 - puppeteer (Apache 2.0)
-- playwright (Apache 2.0)
 
 ## Author
 
