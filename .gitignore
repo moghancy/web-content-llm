@@ -5,6 +5,14 @@ package-lock.json
 
 # Output files
 *.pdf
+*.md
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.txt
 output.pdf
 solakonOutputProductpage.pdf
 

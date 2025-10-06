@@ -1,6 +1,8 @@
 import puppeteer from 'puppeteer';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import { writeFile } from 'fs/promises';
+import { extname } from 'path';
 
 
 // ============================================
@@ -264,13 +266,101 @@ const generateHTML = (content, options = {}) => `
 `;
 
 // ============================================
+// Markdown generation functions
+// ============================================
+
+const renderSectionAsMarkdown = (section) => {
+  const renderers = {
+    h1: (s) => `# ${s.content}\n`,
+    h2: (s) => `## ${s.content}\n`,
+    h3: (s) => `### ${s.content}\n`,
+    h4: (s) => `#### ${s.content}\n`,
+    h5: (s) => `##### ${s.content}\n`,
+    h6: (s) => `###### ${s.content}\n`,
+    paragraph: (s) => `${s.content}\n`,
+    'bullet-list': (s) => s.items.map(item => `- ${item}`).join('\n') + '\n',
+    'numbered-list': (s) => s.items.map((item, i) => `${i + 1}. ${item}`).join('\n') + '\n',
+    quote: (s) => `> ${s.content}\n`
+  };
+
+  return renderers[section.type]?.(section) || '';
+};
+
+const generateMarkdown = (content, options = {}) => {
+  let markdown = `# ${content.title}\n\n`;
+
+  // Add metadata
+  markdown += `**Source:** ${content.metadata.url}\n`;
+  markdown += `**Generated:** ${formatDate()}\n\n`;
+
+  // Add sections
+  markdown += content.sections.map(renderSectionAsMarkdown).join('\n');
+
+  // Add footer if provided
+  if (options.footerText) {
+    markdown += `\n---\n\n${options.footerText}\n`;
+  }
+
+  return markdown;
+};
+
+// ============================================
+// Plain text generation functions
+// ============================================
+
+const renderSectionAsPlainText = (section) => {
+  const renderers = {
+    h1: (s) => `${s.content}\n${'='.repeat(s.content.length)}\n`,
+    h2: (s) => `${s.content}\n${'-'.repeat(s.content.length)}\n`,
+    h3: (s) => `${s.content}\n`,
+    h4: (s) => `${s.content}\n`,
+    h5: (s) => `${s.content}\n`,
+    h6: (s) => `${s.content}\n`,
+    paragraph: (s) => `${s.content}\n`,
+    'bullet-list': (s) => s.items.map(item => `• ${item}`).join('\n') + '\n',
+    'numbered-list': (s) => s.items.map((item, i) => `${i + 1}. ${item}`).join('\n') + '\n',
+    quote: (s) => `  "${s.content}"\n`
+  };
+
+  return renderers[section.type]?.(section) || '';
+};
+
+const generatePlainText = (content, options = {}) => {
+  let text = `${content.title}\n${'='.repeat(content.title.length)}\n\n`;
+
+  // Add metadata
+  text += `Source: ${content.metadata.url}\n`;
+  text += `Generated: ${formatDate()}\n\n`;
+
+  // Add sections
+  text += content.sections.map(renderSectionAsPlainText).join('\n');
+
+  // Add footer if provided
+  if (options.footerText) {
+    text += `\n${'─'.repeat(50)}\n\n${options.footerText}\n`;
+  }
+
+  return text;
+};
+
+// ============================================
 // Side effect functions (scraping, PDF)
 // ============================================
 
 const fetchHTML = async (url) => {
   const { data } = await axios.get(url, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+      'Accept-Language': 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Connection': 'keep-alive',
+      'Upgrade-Insecure-Requests': '1',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none',
+      'Sec-Fetch-User': '?1',
+      'Cache-Control': 'max-age=0'
     }
   });
   return data;
@@ -313,6 +403,25 @@ const createPDFFromHTML = async (html, outputPath, options = {}) => {
 };
 
 // ============================================
+// File writing functions
+// ============================================
+
+const writeTextFile = async (text, outputPath) => {
+  await writeFile(outputPath, text, 'utf-8');
+};
+
+const detectFormat = (outputPath) => {
+  const ext = extname(outputPath).toLowerCase();
+  const formatMap = {
+    '.md': 'markdown',
+    '.markdown': 'markdown',
+    '.txt': 'text',
+    '.pdf': 'pdf'
+  };
+  return formatMap[ext] || 'markdown'; // Default to markdown
+};
+
+// ============================================
 // Main composition functions
 // ============================================
 
@@ -325,15 +434,52 @@ const generatePDF = async (url, outputPath, options = {}) => {
   return content;
 };
 
+const exportContent = async (url, outputPath, options = {}) => {
+  const content = await scrapeContent(url);
+  const format = options.format || detectFormat(outputPath);
+
+  switch (format) {
+    case 'markdown':
+    case 'md': {
+      const markdown = generateMarkdown(content, options);
+      await writeTextFile(markdown, outputPath);
+      console.log(`✓ Markdown created: ${outputPath}`);
+      break;
+    }
+    case 'text':
+    case 'txt': {
+      const text = generatePlainText(content, options);
+      await writeTextFile(text, outputPath);
+      console.log(`✓ Text file created: ${outputPath}`);
+      break;
+    }
+    case 'pdf': {
+      const html = generateHTML(content, { footerText: options.footerText });
+      await createPDFFromHTML(html, outputPath, options);
+      console.log(`✓ PDF created: ${outputPath}`);
+      break;
+    }
+    default:
+      throw new Error(`Unsupported format: ${format}. Use 'markdown', 'text', or 'pdf'.`);
+  }
+
+  return content;
+};
+
 // ============================================
 // Export public API
 // ============================================
 
 export {
   // Main functions
+  exportContent,          // Primary API - auto-detects format from file extension
   scrapeContent,
+
+  // Format-specific generators
+  generateMarkdown,
+  generatePlainText,
   generateHTML,
-  generatePDF,
+  generatePDF,            // Backward compatibility
 
   // Utility functions (useful for testing/customization)
   escapeHtml,
@@ -344,10 +490,9 @@ export {
   extractMetadata,
   extractSections,
 
-  // HTML rendering (if you want custom templates)
+  // Rendering functions
   renderSection,
   renderSections,
   getStyles
 };
-
 

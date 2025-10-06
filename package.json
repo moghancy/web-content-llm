@@ -1,35 +1,44 @@
 {
-  "name": "web-to-pdf",
+  "name": "web-content-llm",
   "version": "1.0.0",
   "type": "module",
-  "description": "Web scraping tool that extracts content from websites and generates clean, well-formatted PDF documents",
-  "main": "contentPdfCreator.js",
+  "description": "Extract web content and export to LLM-friendly formats (Markdown, Text) or PDF. Optimized for AI model consumption with clean semantic structure.",
+  "main": "index.js",
   "scripts": {
-    "start": "node contentPdfCreator.js"
+    "start": "node index.js",
+    "test": "vitest"
   },
   "keywords": [
     "web-scraping",
-    "pdf-generator",
+    "markdown-generator",
     "content-extraction",
+    "llm",
+    "ai",
+    "claude",
+    "chatgpt",
     "cheerio",
     "puppeteer",
-    "html-to-pdf",
+    "web-to-markdown",
+    "web-to-text",
     "scraper",
-    "web-to-pdf"
+    "llm-tools"
   ],
   "author": "MOGHANCY",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MOGHANCY/web-to-pdf.git"
+    "url": "https://github.com/MOGHANCY/web-content-llm.git"
   },
   "bugs": {
-    "url": "https://github.com/MOGHANCY/web-to-pdf/issues"
+    "url": "https://github.com/MOGHANCY/web-content-llm/issues"
   },
-  "homepage": "https://github.com/MOGHANCY/web-to-pdf#readme",
+  "homepage": "https://github.com/MOGHANCY/web-content-llm#readme",
   "dependencies": {
     "axios": "^1.12.2",
     "cheerio": "^1.1.2",
     "puppeteer": "^24.23.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
   }
 }
