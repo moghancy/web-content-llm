@@ -5,11 +5,11 @@
 
 Extract web content and export to LLM-friendly formats (Markdown, Text) or PDF. Optimized for AI model consumption with clean semantic structure.
 
-**Perfect for feeding web content to Claude, ChatGPT, and other LLMs.**
+**Perfect for feeding web content to ChatGPT, Gemini, and other LLMs.**
 
 ## Features
 
-- 🤖 **LLM-optimized** - Markdown format recommended for Claude and other AI models
+- 🤖 **LLM-optimized** - Markdown format recommended for ChatGPT and other AI models
 - 📝 **Multiple formats** - Export to Markdown (.md), Plain Text (.txt), or PDF (.pdf)
 - 🌐 Scrapes websites with real browser support
 - 🧹 Intelligent content extraction (removes navigation, ads, duplicates)
@@ -43,7 +43,7 @@ import { exportContent } from './index.js';
 // Auto-detects format from file extension (.md)
 await exportContent('https://example.com/article', './output.md');
 
-// Perfect for feeding to Claude or ChatGPT!
+// Perfect for feeding to ChatGPT or other LLMs!
 ```
 
 ### Export to Plain Text
@@ -125,7 +125,7 @@ Automatically removes:
 
 ### 3. Output Generation
 
-**Markdown** (recommended for LLMs like Claude):
+**Markdown** (recommended for LLMs):
 - Preserves semantic structure with `#` headings
 - Clean bullet and numbered lists
 - Blockquotes with `>` syntax
@@ -261,7 +261,7 @@ Generates HTML from scraped content.
 
 ## Examples
 
-### Extract Article for Claude Analysis
+### Extract Article for LLM Analysis
 
 ```javascript
 // Export to markdown (best for LLMs)
@@ -271,7 +271,7 @@ await exportContent(
   { footerText: 'Source: My Blog' }
 );
 
-// Now feed the markdown to Claude for analysis!
+// Now feed the markdown to your LLM for analysis!
 ```
 
 ### Scrape Documentation to Text
@@ -344,9 +344,9 @@ The scraper automatically deduplicates content based on type and text. If you se
 
 ## Why Markdown for LLMs?
 
-**Markdown is the optimal format for feeding web content to Claude and other LLMs:**
+**Markdown is the optimal format for feeding web content to LLMs:**
 
-1. **Native format** - Claude is extensively trained on markdown
+1. **Native format** - Most LLMs are extensively trained on markdown
 2. **Semantic structure** - Preserves headings, lists, quotes
 3. **Clean & readable** - Both for humans and AI
 4. **Context-efficient** - Compact representation vs HTML/PDF
@@ -360,7 +360,7 @@ web-content-llm/
 ├── index.test.js         # Test suite (33 tests)
 ├── vitest.config.js      # Test configuration
 ├── package.json          # Dependencies and scripts
-├── CLAUDE.md             # Claude Code instructions
+├── CLAUDE.md             # Development instructions
 └── README.md             # This file
 ```
 
